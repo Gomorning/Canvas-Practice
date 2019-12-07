@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>点击产生波纹</title>
+</head>
+
+<body>
+    <canvas></canvas>
+    <script>
+        var canvas = document.querySelector('canvas');
+        var ctx = canvas.getContext('2d');
+        var width = canvas.width = document.documentElement.clientWidth;
+        var height = canvas.height = document.documentElement.clientHeight;
+        var arr = []; 
+
+        function Circle(x, y, radius) {
+            this.x = x;
+            this.y = y;
+            this.radius = radius;
+            this.Alpha = 1;
+        }
+
+        Circle.prototype.draw = function () {
+            ctx.beginPath();
+            ctx.strokeStyle = 'rgba(0,255,150,' + this.Alpha + ')';
+            ctx.lineWidth = 3;
+            ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+            ctx.stroke();
+            ctx.closePath();
+        }
+
+
+        window.addEventListener('click', function (e) {
+            var circle = new Circle(e.clientX, e.clientY, 2);
+            arr.push(circle);
+        });
+
+        function loop() {
+            ctx.clearRect(0, 0, width, height);
+            for (let i = 0; i < arr.length; i++) {
+                arr[i].draw();
+                arr[i].radius++;
+                arr[i].Alpha -= 0.008;
+                if (arr[i].radius >= 300) arr.splice(i, 1);
+            }
+            var raf = window.requestAnimationFrame(loop);
+        }
+
+        loop();
+
+    </script>
+</body>
+
+</html>
